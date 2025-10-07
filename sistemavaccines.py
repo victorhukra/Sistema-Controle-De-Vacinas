@@ -1,62 +1,3 @@
-# Sistema de Gerenciamento de uma Clínica de Vacinas com Controle de Estoque
-
-# Uma clínica deseja informatizar o controle de seus pacientes, aplicações e vacinas em estoque. 
-# Para isso, você deve desenvolver um sistema em Python que permita organizar essas informações.
-
-# O sistema deve oferecer as seguintes funcionalidades:
-
-# 1.Cadastro de vacinas no estoque
-
-# Cada vacina deve ter: código, nome, número de doses necessárias e quantidade em estoque. 
-# As vacinas devem ser armazenadas em uma lista de dicionários. Exemplo:
-
-# {"codigo": 1, "nome": "Covid-19", "doses": 2, "estoque": 50}
-
-# 2. Cadastro de pacientes
-
-# Cada paciente deve ter: código, nome e idade. Os pacientes devem ser armazenados
-#  em uma lista de dicionários. Exemplo:
-
-# {"codigo": 101, "nome": "Ana Souza", "idade": 34}
-
-# 3. Registro de aplicações de vacinas
-
-# Cada aplicação deve conter: código do paciente, código da vacina e dose aplicada (1ª, 2ª, etc.). 
-# As aplicações devem ser armazenadas em uma lista de dicionários. Sempre que uma vacina for aplicada,
-#  o estoque dessa vacina deve ser reduzido em 1. 
-# Se não houver vacinas em estoque, a aplicação não pode ser registrada. Exemplo:
-
-# {"paciente": 101, "vacina": 1, "dose": 1} 
-
-# 4. Relatórios
-# O sistema deve permitir:
-
-# -Listar todas as vacinas cadastradas com seu estoque atual.
-
-# -Listar todos os pacientes cadastrados.
-
-# -Listar todas as aplicações registradas.
-
-# -Exibir quais pacientes ainda não completaram todas as doses de suas vacinas.
-
-# -Exibir estoques baixos (vacinas com quantidade abaixo de 5).
-
-# 5.Menu interativo:
-
-# 1 - Cadastrar vacina no estoque
-# 2 - Cadastrar paciente
-# 3 - Registrar aplicação de vacina
-# 4 - Listar vacinas
-# 5 - Listar pacientes
-# 6 - Listar aplicações
-# 7 - Mostrar pacientes com vacinação incompleta
-# 8 - Mostrar vacinas com estoque baixo
-# 0 - Sair
-
-# Organização do código
-
-# Crie funções para cada operação principal (cadastrar_vacina, cadastrar_paciente, registrar_aplicacao, etc.). 
-
 class NãoEncontrado(Exception):
     pass
 
@@ -295,4 +236,5 @@ if __name__ == '__main__':
             print(f'{e}')
 
         except DoseInvalida as e:
+
             print(f'{e}')
