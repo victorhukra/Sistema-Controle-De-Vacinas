@@ -1,3 +1,9 @@
+#Sistema de Controle de Vacinas em Python
+#Simula o funcionamento de uma clínica de vacinação,
+#com controle de vacinas, pacientes, aplicações e relatórios.
+#Desenvolvido para fins acadêmicos e estudo de lógica de programação.
+
+# ----------------- Classes de Exceções Personalizadas -----------------
 class NãoEncontrado(Exception):
     pass
 
@@ -10,14 +16,16 @@ class RegistroVazio(Exception):
 class DoseInvalida(ValueError):
     pass
 
-def cadastrarVacina(lista):
 
+# ----------------- Função: Cadastro de Vacinas -----------------
+def cadastrarVacina(lista):
     while True:
         try:
             qtdEstoque = int(input('\nInforme a quantidade de vacinas que deseja cadastrar: '))
             break
         except ValueError:
-             print('\nInforme um valor valor válido.')
+            print('\nInforme um valor valor válido.')
+
     for i in range(qtdEstoque):
         nomeVacina = input(f'\nVacina ({i+1}) - Nome: ')
         codigoVacina = input(f'{nomeVacina} - Código: ')
@@ -37,19 +45,22 @@ def cadastrarVacina(lista):
             except ValueError:
                 print('\nInforme um valor válido para o estoque.')
 
+        #Armazena os dados da vacina em um dicionário
         dictVacina = {'nome': nomeVacina, 'codigo': codigoVacina, 'doses': dosesVacina, 'estoque': estoqueVacina}
         lista.append(dictVacina)
 
     return f'\n{qtdEstoque} vacinas cadastradas com sucesso!'
 
-def cadastrarPaciente(lista):
 
+# ----------------- Função: Cadastro de Pacientes -----------------
+def cadastrarPaciente(lista):
     while True:
         try:
             qtdPaciente = int(input('\nInforme a quantidade de pacientes que deseja cadastrar: '))
             break
         except ValueError:
             print('\nInforme um valor válido.')
+
     for i in range(qtdPaciente):
         nomePaciente = input(f'\nPaciente ({i+1}) - Nome: ')
         codigoPaciente = input(f'{nomePaciente} - Código: ')
@@ -60,18 +71,19 @@ def cadastrarPaciente(lista):
             except ValueError:
                 print(f'\nInforme uma idade válida para {nomePaciente}.')
 
+        # Armazena os dados do paciente em um dicionário
         dictPaciente = {'nome': nomePaciente, 'codigo': codigoPaciente, 'idade': idadePaciente}
         lista.append(dictPaciente)
 
     return f'\n{qtdPaciente} Pacientes cadastrados com sucesso!'
 
 
+# ----------------- Função: Registro de Aplicações -----------------
 def registroAplicacoes(vacina, paciente, registros):
     if len(vacina) == 0 or len(paciente) == 0:
         raise RegistroVazio('\nOs registros necessários para executar essa opção ainda não foram efetuados.')
 
     while True:
-    
         codeVacina = input('\nInforme o código da vacina: ')
         codePaciente = input('Informe o código do paciente: ')
         while True:
@@ -84,24 +96,24 @@ def registroAplicacoes(vacina, paciente, registros):
             except ValueError:
                 print('\nInforme um valor válido para doses.')
 
-
+        #Verifica correspondência entre paciente e vacina
         encontrado = False
         for vaccine in vacina:
             for patient in paciente:
                 if codeVacina == vaccine['codigo'] and codePaciente == patient['codigo']:
                     encontrado = True
                     if vaccine['estoque'] > 0:
-                        vaccine['estoque'] -= 1
+                        vaccine['estoque'] -= 1  # Reduz estoque após aplicação
                     else:
                         raise EstoqueInsuficiente('\nEstoque Insuficiente.')
-                    
+
                     if doseAplicada > vaccine['doses']:
                         raise DoseInvalida('\nDose inválida.')
 
         if not encontrado:
             raise NãoEncontrado('\nCódigo inválido.')
-        
         else:
+            # Registra a aplicação
             dictRegistro = {'vacina': codeVacina, 'paciente': codePaciente, 'doses': doseAplicada}
             registros.append(dictRegistro)
 
@@ -112,13 +124,14 @@ def registroAplicacoes(vacina, paciente, registros):
     return '\nAplicação registrada!'
 
 
+# ----------------- Funções de Listagem -----------------
 def listarVacina(vacina):
     if len(vacina) == 0:
         raise RegistroVazio('\nNão há nenhuma vacina cadastrada.')
     else:
         print('\nVacinas cadastradas:')
         for vaccine in vacina:
-            print(f'{vaccine['nome']} - {vaccine['codigo']} | Estoque: {vaccine['estoque']}un - Doses: {vaccine['doses']}')
+            print(f"{vaccine['nome']} - {vaccine['codigo']} | Estoque: {vaccine['estoque']}un - Doses: {vaccine['doses']}")
 
 
 def listarPaciente(paciente):
@@ -127,7 +140,8 @@ def listarPaciente(paciente):
     else:
         print('\nPacientes cadastrados:')
         for patient in paciente:
-            print(f'{patient['nome']} | {patient['codigo']} - Idade: {patient['idade']}')
+            print(f"{patient['nome']} | {patient['codigo']} - Idade: {patient['idade']}")
+
 
 def listarAplicacoes(registro):
     if len(registro) == 0:
@@ -135,44 +149,44 @@ def listarAplicacoes(registro):
     else:
         print('\nAplicações cadastradas:')
         for register in registro:
-            print(f'Vacina: {register['vacina']} - Paciente: {register['paciente']} | {register['doses']}ª Dose')
+            print(f"Vacina: {register['vacina']} - Paciente: {register['paciente']} | {register['doses']}ª Dose")
 
 
+# ----------------- Função: Vacinação Incompleta -----------------
 def vacinacaoIncompleta(vacina, registro):
     if len(vacina) == 0 or len(registro) == 0:
         raise RegistroVazio('\nOs registros necessários para executar essa opção ainda não foram efetuados.')
     
     listaDoses = []
-    existe = False
     for vaccine in vacina:
         for register in registro:
             if vaccine['codigo'] == register['vacina']:
-                existe = True
                 if register['doses'] < vaccine['doses']:
                     faltam = vaccine['doses'] - register['doses']
                     dictIncompleto = {'paciente': register['paciente'], 'faltam': faltam}
                     listaDoses.append(dictIncompleto)
     
     for dose in listaDoses:
-        print(f'- Paciente: {dose['paciente']} | Faltam: {dose['faltam']}')
+        print(f"- Paciente: {dose['paciente']} | Faltam: {dose['faltam']}")
 
+
+# ----------------- Função: Estoque Baixo -----------------
 def estoqueBaixo(vacina):
-
-    list = []
-
     if len(vacina) == 0:
         raise RegistroVazio('\nNão há nenhuma vacina cadastrada.')
     
-    else:
-        print('\nVacinas com baixo estoque:')
-        for vaccine in vacina:
-            if vaccine['estoque'] <= 5:
-                print(f'{vaccine['nome']} - {vaccine['codigo']} | Estoque: {vaccine['estoque']}un')
-                list.append(vaccine['estoque'])
+    list = []
+    print('\nVacinas com baixo estoque:')
+    for vaccine in vacina:
+        if vaccine['estoque'] <= 5:
+            print(f"{vaccine['nome']} - {vaccine['codigo']} | Estoque: {vaccine['estoque']}un")
+            list.append(vaccine['estoque'])
 
     if len(list) == 0:
         print('\nNão há nenhuma vacina com baixo estoque.')
 
+
+# ----------------- Função: Menu Principal -----------------
 def showMenu():
     print('\n---------MENU PRINCIPAL---------\n')
     print('1 - Cadastrar vacina no estoque')
@@ -185,12 +199,12 @@ def showMenu():
     print('8 - Mostrar vacinas com estoque baixo')
     print('0 - Sair')
 
-if __name__ == '__main__':
 
+# ----------------- Execução Principal -----------------
+if __name__ == '__main__':
     listaVacina = []
     listaPaciente = []
     listaRegistros = []
-
 
     while True:
         try:
@@ -200,32 +214,25 @@ if __name__ == '__main__':
             match opcao:
                 case 1:
                     cadastrarVacina(listaVacina)
-
                 case 2:
                     cadastrarPaciente(listaPaciente)
-                
                 case 3:
                     registroAplicacoes(listaVacina, listaPaciente, listaRegistros)
-                
                 case 4:
                     listarVacina(listaVacina)
-
                 case 5:
                     listarPaciente(listaPaciente)
-
                 case 6:
                     listarAplicacoes(listaRegistros)
-
                 case 7:
                     vacinacaoIncompleta(listaVacina, listaRegistros)
-
                 case 8:
                     estoqueBaixo(listaVacina)
-
                 case 0:
                     print('Programa encerrado!')
                     break
 
+        #Tratamento de erros
         except Exception as e:
             print(f'{e}')
         except NãoEncontrado as e:
@@ -234,7 +241,5 @@ if __name__ == '__main__':
             print(f'{e}')
         except RegistroVazio as e:
             print(f'{e}')
-
         except DoseInvalida as e:
-
             print(f'{e}')
